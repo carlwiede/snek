@@ -63,5 +63,33 @@ def show_score(choice, color, font, size):
     # display the text
     game_window.blit(score_surface, score_rect)
 
+# game over
+def game_over():
+    
+    # create font object
+    my_font = pygame.font.SysFont('times new roman', 50)
+    
+    # create text surface
+    game_over_surface = my_font.render('Your Score is : ' + str(score), True, red)
+
+    # rectangle for surface
+    game_over_rect = game_over_surface.get_rect()
+    
+    # set position of text
+    game_over_rect.midtop = (window_x/2, window_y/4)
+    
+    # draw text
+    game_window.blit(game_over_surface, game_over_rect)
+    pygame.display.flip()
+    
+    # display for 5 seconds
+    time.sleep(5)
+    
+    # deactivate pygame
+    pygame.quit()
+    
+    # exit the program
+    quit()
+
 while True:
     pass
