@@ -3,7 +3,7 @@ import pygame
 import time
 import random
 
-snake_speed = 15
+snek_speed = 15
 
 # window size
 window_x = 720
@@ -27,10 +27,10 @@ game_window = pygame.display.set_mode((window_x, window_y))
 fps = pygame.time.Clock()
 
 # define snek default position
-snake_position = [100, 50]
+snek_position = [100, 50]
 
 # define initial blocks of the body
-snake_body = [  [100, 50],
+snek_body = [  [100, 50],
                 [90, 50],
                 [80, 50],
                 [70, 50]  
@@ -119,21 +119,21 @@ while True:
         
     # move snek
     if direction == 'UP':
-        snake_position[1] -= 10
+        snek_position[1] -= 10
     if direction == 'DOWN':
-        snake_position[1] += 10
+        snek_position[1] += 10
     if direction == 'LEFT':
-        snake_position[0] -= 10
+        snek_position[0] -= 10
     if direction == 'RIGHT':
-        snake_position[0] += 10
+        snek_position[0] += 10
         
     # snek body growing mechanism
-    snake_body.insert(0, list(snake_position))
-    if snake_position[0] == fruit_position[0] and snake_position[1] == fruit_position[1]:
+    snek_body.insert(0, list(snek_position))
+    if snek_position[0] == fruit_position[0] and snek_position[1] == fruit_position[1]:
         score += 10
         fruit_spawn = False
     else:
-        snake_body.pop()
+        snek_body.pop()
         
     if not fruit_spawn:
         fruit_position = [random.randrange(1, (window_x//10)) * 10,
@@ -143,7 +143,7 @@ while True:
     
     game_window.fill(black)
     
-    for pos in snake_body:
+    for pos in snek_body:
         pygame.draw.rect(game_window, green, pygame.Rect(
             pos[0], pos[1], 10, 10))
         
@@ -151,14 +151,14 @@ while True:
         fruit_position[0], fruit_position[1], 10, 10))
     
     # game over conditions
-    if snake_position[0] < 0 or snake_position[0] > window_x-10:
+    if snek_position[0] < 0 or snek_position[0] > window_x-10:
         game_over()
-    if snake_position[1] < 0 or snake_position[1] > window_y-10:
+    if snek_position[1] < 0 or snek_position[1] > window_y-10:
         game_over()
         
     # snek touching itself
-    for block in snake_body[1:]:
-        if snake_position[0] == block[0] and snake_position[1] == block[1]:
+    for block in snek_body[1:]:
+        if snek_position[0] == block[0] and snek_position[1] == block[1]:
             game_over()
             
     # display score
@@ -168,4 +168,4 @@ while True:
     pygame.display.update()
     
     # refresh rate
-    fps.tick(snake_speed)
+    fps.tick(snek_speed)
