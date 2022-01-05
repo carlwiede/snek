@@ -26,7 +26,7 @@ game_window = pygame.display.set_mode((window_x, window_y))
 # fps controller
 fps = pygame.time.Clock()
 
-# define snake default position
+# define snek default position
 snake_position = [100, 50]
 
 # define initial blocks of the body
@@ -41,9 +41,9 @@ fruit_position = [random.randrange(1, (window_x//10)) * 10,
                   random.randrange(1, (window_y//10)) * 10]
 fruit_spawn = True
 
-# default snake direction
+# default snek direction
 direction = 'RIGHT'
-change_to = direction
+next_dir = direction
 
 # default score
 score = 0
@@ -91,5 +91,81 @@ def game_over():
     # exit the program
     quit()
 
+# main
 while True:
-    pass
+    
+    # handle key events
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                next_dir = 'UP'
+            if event.key == pygame.K_DOWN:
+                next_dir = 'DOWN'
+            if event.key == pygame.K_LEFT:
+                next_dir = 'LEFT'
+            if event.key == pygame.K_RIGHT:
+                next_dir = 'RIGHT'
+    
+    # change direction           
+    # disallowing 180 degree turns
+    if next_dir == 'UP' and direction != 'DOWN':
+        direction = 'UP'
+    if next_dir == 'DOWN' and direction != 'UP':
+        direction = 'DOWN'
+    if next_dir == 'LEFT' and direction != 'RIGHT':
+        direction = 'LEFT'
+    if next_dir == 'RIGHT' and direction != 'LEFT':
+        direction = 'RIGHT'
+        
+    # move snek
+    if direction == 'UP':
+        snake_position[1] -= 10
+    if direction == 'DOWN':
+        snake_position[1] += 10
+    if direction == 'LEFT':
+        snake_position[0] -= 10
+    if direction == 'RIGHT':
+        snake_position[0] += 10
+        
+    # snek body growing mechanism
+    snake_body.insert(0, list(snake_position))
+    if snake_position[0] == fruit_position[0] and snake_position[1] == fruit_position[1]:
+        score += 10
+        fruit_spawn = False
+    else:
+        snake_body.pop()
+        
+    if not fruit_spawn:
+        fruit_position = [random.randrange(1, (window_x//10)) * 10,
+                          random.randrange(1, (window_y//10)) * 10]
+    
+    fruit_spawn = True
+    
+    game_window.fill(black)
+    
+    for pos in snake_body:
+        pygame.draw.rect(game_window, green, pygame.Rect(
+            pos[0], pos[1], 10, 10))
+        
+    pygame.draw.rect(game_window, white, pygame.Rect(
+        fruit_position[0], fruit_position[1], 10, 10))
+    
+    # game over conditions
+    if snake_position[0] < 0 or snake_position[0] > window_x-10:
+        game_over()
+    if snake_position[1] < 0 or snake_position[1] > window_y-10:
+        game_over()
+        
+    # snek touching itself
+    for block in snake_body[1:]:
+        if snake_position[0] == block[0] and snake_position[1] == block[1]:
+            game_over()
+            
+    # display score
+    show_score(1, white, 'times new roman', 20)
+    
+    # refresh screen
+    pygame.display.update()
+    
+    # refresh rate
+    fps.tick(snake_speed)
